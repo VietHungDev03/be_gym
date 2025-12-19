@@ -6,8 +6,9 @@ import { AppModule } from './app.module';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
+  // Enable CORS
   app.enableCors({
-    origin: true, // reflect origin request
+    origin: process.env.CORS_ORIGIN || 'http://localhost:5173',
     credentials: true,
   });
 
@@ -40,8 +41,11 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api/docs', app, document);
 
-  const port = process.env.APP_PORT || 3000;
-  await app.listen(port);
+  const port = Number(process.env.PORT) || Number(process.env.APP_PORT) || 3000;
+  await app.listen(port, '0.0.0.0');
+
+  console.log(`Listening on ${port}`);
+
 
   console.log(`
   🚀 iGymCare Backend Server đang chạy!
